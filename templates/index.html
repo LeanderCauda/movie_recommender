@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="title">
+        Movie Recommender
+    </div>
+    <div class="container">
+        <h1>Looking for your next favorite movie?</h1>
+        <form id="movie-form">
+            <input type="text" id="movie-input" placeholder="Enter a movie title" required>
+            <button type="submit" id="recommend_btn">Get Recommendations</button>
+        </form>
+        <div id="recommendations" class="hidden"></div>
+    </div>
+    <div id="credits">
+        Created by Luca Deandrea
+    </div>
+
+    <script>
+        document.getElementById('movie-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const movie = document.getElementById('movie-input').value;
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `movie=${encodeURIComponent(movie)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const recommendationsDiv = document.getElementById('recommendations');
+                recommendationsDiv.innerHTML = '<h2>Recommended Movies</h2>';
+                const ul = document.createElement('ul');
+                data.forEach(movie => {
+                    const li = document.createElement('li');
+                    li.textContent = movie;
+                    ul.appendChild(li);
+                });
+                recommendationsDiv.appendChild(ul);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('recommend_btn');
+            const box = document.getElementById('recommendations');
+
+            button.addEventListener('click', function() {
+                box.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
