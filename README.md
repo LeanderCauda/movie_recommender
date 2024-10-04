@@ -114,7 +114,7 @@ Receives a movie title and returns recommendations.
 ]
 ```
 
-## Required Data
+## The Dataset
 
 The system requires a `movies.csv` file with the following columns:
 - title
