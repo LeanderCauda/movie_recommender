@@ -4,7 +4,7 @@ A web-based movie recommendation system that suggests similar movies based on us
 
 ## Demo
 
-[Add a screenshot or GIF of your application here]
+![Movie Recommender Screenshot](screenshots/Web_interface.png)
 
 ## Features
 
@@ -145,14 +145,6 @@ The application features a carefully crafted UI with:
 - Mobile app development
 - Performance optimization for larger datasets
 
-## Contributing
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/improvement`)
-3. Make changes and commit (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/improvement`)
-5. Create a Pull Request
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -161,6 +153,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Created by Luca Deandrea
 
-## Acknowledgments
-
-- Movie data source: [Add your data source here] 
