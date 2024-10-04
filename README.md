@@ -41,13 +41,14 @@ movie-recommender/
 │
 ├── app.py                 # Flask application
 ├── movie_recommender.py   # Recommendation engine
+├── movie_reco.ipynb       # Detailed explaination of the recommendation engine
 ├── static/
 │   ├── styles.css         # CSS styling
 │   ├── home_cinema.svg    # Background image
 │   └── Uni Sans Heavy.otf # Custom font
 ├── templates/
 │   └── index.html         # Main webpage
-└── movies.csv             # Dataset (not included in repo)
+└── movies.csv             # Dataset
 ```
 
 ## How It Works
