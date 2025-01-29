@@ -11,10 +11,10 @@
         Movie Recommender
     </div>
     <div class="container">
-        <h1>Looking for your next favorite movie?</h1>
+        <h1>Find your next favorite movie</h1>
         <form id="movie-form">
             <input type="text" id="movie-input" placeholder="Enter a movie title" required>
-            <button type="submit" id="recommend_btn">Get Recommendations</button>
+            <button type="submit" id="recommend_btn">Recommend</button>
         </form>
         <div id="recommendations" class="hidden"></div>
     </div>
@@ -36,21 +36,39 @@
             .then(response => response.json())
             .then(data => {
                 const recommendationsDiv = document.getElementById('recommendations');
-                recommendationsDiv.innerHTML = '<h2>Recommended Movies</h2>';
-                const ul = document.createElement('ul');
+                recommendationsDiv.innerHTML = '';
+                
+                const container = document.createElement('div');
+                container.style.display = 'flex';
+                container.style.flexWrap = 'wrap';
+    
                 data.forEach(movie => {
-                    const li = document.createElement('li');
-                    li.textContent = movie;
-                    ul.appendChild(li);
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('movie-card');
+    
+                    const img = document.createElement('img');
+                    img.src = movie.poster_url || 'https://via.placeholder.com/200'; // Placeholder if no poster
+                    img.alt = movie.title;
+                    img.style.width = '150px';
+                    img.style.borderRadius = '8px';
+    
+                    const title = document.createElement('h4');
+                    title.textContent = movie.title;
+    
+                    movieCard.appendChild(img);
+                    movieCard.appendChild(title);
+                    container.appendChild(movieCard);
                 });
-                recommendationsDiv.appendChild(ul);
+    
+                recommendationsDiv.appendChild(container);
             })
             .catch(error => console.error('Error:', error));
         });
+    
         document.addEventListener('DOMContentLoaded', function() {
             const button = document.getElementById('recommend_btn');
             const box = document.getElementById('recommendations');
-
+    
             button.addEventListener('click', function() {
                 box.classList.toggle('hidden');
             });
