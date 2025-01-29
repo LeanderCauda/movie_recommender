@@ -3,21 +3,17 @@ import numpy as np
 import difflib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-#from flask import Flask, request, jsonify, render_template
 
 
-# loading the data
 movie_df = pd.read_csv('movies.csv') 
 selected_features = ['genres','keywords','tagline','cast','director']
 for features in selected_features:        
     movie_df[features] = movie_df[features].fillna('')
 
-#concatanating features and vectorizing the resulting data
 features_data = movie_df['genres']+' '+movie_df['keywords']+' '+movie_df['tagline']+' '+movie_df['cast']+' '+movie_df['director']
 vectorizer = TfidfVectorizer()
 features_vector = vectorizer.fit_transform(features_data)
 
-# similarity score 
 sim = cosine_similarity(features_vector)
 
 
@@ -69,7 +65,7 @@ def recommend_movie(movie_name, n_display=3):
     '''
     sorted_movies = get_similarity(movie_name)
     if isinstance(sorted_movies, str):
-        return [sorted_movies]  # Return as a list for consistency
+        return [sorted_movies] 
     else:
         top_movies = popularity(sorted_movies)
         displayed_movies = [movie_df.iloc[movie[0]]['title'] for movie in top_movies[:n_display]]

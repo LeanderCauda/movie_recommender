@@ -1,10 +1,10 @@
 # Movie Recommendation System
 
-A web-based movie recommendation system that suggests similar movies based on user input, combining machine learning techniques with a sleek, responsive user interface.
+A web-based movie recommendation system that suggests similar movies based on user input, combining matrix factorization with a sleek, responsive user interface.
 
 ## Demo
 
-![Movie Recommender Screenshot](screenshots/Web_interface.png)
+![Movie Recommender Screenshot](screenshots/landing.png)
 
 ## Features
 
@@ -15,8 +15,9 @@ A web-based movie recommendation system that suggests similar movies based on us
   - Cast
   - Director
 - Responsive web interface with modern design
-- Real-time recommendations using AJAX
+- Real-time recommendations using TF-IDF matrix factorization
 - Popularity-based ranking of suggestions
+- Use of TMDB posters for appealing interface
 - Fuzzy string matching for user-friendly input
 
 ## Tech Stack
@@ -32,7 +33,7 @@ A web-based movie recommendation system that suggests similar movies based on us
   - HTML5
   - CSS3
   - JavaScript (AJAX for async requests)
-  - Custom fonts (Uni Sans Heavy)
+  - Custom fonts
 
 ## Project Structure
 
@@ -44,8 +45,7 @@ movie-recommender/
 ├── movie_reco.ipynb       # Detailed explaination of the recommendation engine
 ├── static/
 │   ├── styles.css         # CSS styling
-│   ├── home_cinema.svg    # Background image
-│   └── Uni Sans Heavy.otf # Custom font
+│   └── Bebasneue.ttf      # Custom font
 ├── templates/
 │   └── index.html         # Main webpage
 └── movies.csv             # Dataset
@@ -67,6 +67,7 @@ movie-recommender/
    - User enters a movie title
    - AJAX request sends the title to the Flask backend
    - Backend processes the request and returns recommendations
+   - TMDB API request the poster and send it to the frontend
    - Frontend displays the results with a visual animation
 
 ## Installation
@@ -132,11 +133,7 @@ The application features a carefully crafted UI with:
 - Gradient background with SVG illustration
 - Custom typography using Uni Sans Heavy font
 - Responsive design for various screen sizes
-- Animated buttons and card shadows
-- Color scheme: 
-  - Primary: #660000 (dark red)
-  - Secondary: #f77f00 (orange)
-  - Text: #FFFFE3 (off-white)
+- Animated buttons and card shadowss
 
 ## Future Improvements
 

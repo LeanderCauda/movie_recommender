@@ -10,11 +10,9 @@ def fetch_movie_posters(movie_title):
     base_url = "https://api.themoviedb.org/3/search/movie"
     image_base_url = "https://image.tmdb.org/t/p/w500"
 
-    # Search for the movie in TMDb
     response = requests.get(base_url, params={"api_key": api_key, "query": movie_title})
     data = response.json()
     
-    # Check if the movie is found
     if data['results']:
         poster_path = data['results'][0].get('poster_path')
         if poster_path:
