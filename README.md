@@ -71,7 +71,7 @@ Dowload the dataset [here](https://www.kaggle.com/datasets/rounakbanik/the-movie
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/movie-recommender.git
+git clone https://github.com/LeanderCauda/movie_recommender.git
 
 # Navigate to the project directory
 cd movie-recommender
