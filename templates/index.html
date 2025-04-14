@@ -5,27 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Recommender</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="../static/Angry_kiwi2.png" type="image/png">
 </head>
 <body>
+    <img src = "../static/Angry_kiwi2.png" alt="" id = "logo">
     <div id="title">
-        Movie Recommender
+        ANGRY KIWI
+    </div>
+    <div class="main_text">
+        <h1>
+            <span>FIND</span>
+            <span>YOUR</span>
+            <span>NEXT</span>
+            <span>FAVORITE</span>
+            <span>MOVIE.</span>   
+        </h1>
     </div>
     <div class="container">
-        <h1>Find your next favorite movie</h1>
         <form id="movie-form">
             <input type="text" id="movie-input" placeholder="Enter a movie title" required>
-            <button type="submit" id="recommend_btn">Recommend</button>
+            <div class="rectangle"></div>
         </form>
         <div id="recommendations" class="hidden"></div>
     </div>
+    <button type="submit" id="recommend_btn">RECOMMEND MOVIES</button>
     <div id="credits">
         Created by Luca Deandrea
     </div>
 
     <script>
-        document.getElementById('movie-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const movie = document.getElementById('movie-input').value;
+        document.getElementById('recommend_btn').addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default action if needed (not required for a button)
+        
+        const movie = document.getElementById('movie-input').value;
+        if (movie.trim() !== '') { // Open the if statement
+            
             fetch('/recommend', {
                 method: 'POST',
                 headers: {
@@ -41,29 +55,31 @@
                 const container = document.createElement('div');
                 container.style.display = 'flex';
                 container.style.flexWrap = 'wrap';
-    
+
                 data.forEach(movie => {
                     const movieCard = document.createElement('div');
                     movieCard.classList.add('movie-card');
-    
+
                     const img = document.createElement('img');
-                    img.src = movie.poster_url || 'https://via.placeholder.com/200'; // Placeholder if no poster
+                    img.src = movie.poster_url || 'https://via.placeholder.com/200'; 
                     img.alt = movie.title;
-                    img.style.width = '150px';
+                    img.style.width = '180px';
                     img.style.borderRadius = '8px';
-    
+
                     const title = document.createElement('h4');
                     title.textContent = movie.title;
-    
+
                     movieCard.appendChild(img);
                     movieCard.appendChild(title);
                     container.appendChild(movieCard);
                 });
-    
+
                 recommendationsDiv.appendChild(container);
             })
             .catch(error => console.error('Error:', error));
-        });
+
+        }
+    });
     
         document.addEventListener('DOMContentLoaded', function() {
             const button = document.getElementById('recommend_btn');

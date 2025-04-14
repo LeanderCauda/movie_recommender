@@ -2,71 +2,79 @@ import pandas as pd
 import numpy as np
 import difflib
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.neighbors import NearestNeighbors
+import pickle
+from scipy.sparse import csr_matrix
+import faiss
 
 
-movie_df = pd.read_csv('movies.csv') 
-selected_features = ['genres','keywords','tagline','cast','director']
-for features in selected_features:        
-    movie_df[features] = movie_df[features].fillna('')
+movies_df = pd.read_csv('cleaned_movies.csv')
+ratings_df = pd.read_csv('dataset/ratings_small.csv')
 
-features_data = movie_df['genres']+' '+movie_df['keywords']+' '+movie_df['tagline']+' '+movie_df['cast']+' '+movie_df['director']
-vectorizer = TfidfVectorizer()
+
+#Handle NaNs Values
+movies_df['title'] = movies_df['title'].fillna('')
+
+
+# TF-IDF Model
+
+#Weight distribution
+feature_weights = {
+    'overview': 2,  
+    'genres': 3,    
+    'keywords': 1.5,
+    'crew': 1,    
+    'tagline': 1.5  
+}
+
+features_data = (
+    movies_df['overview'].fillna('').apply(lambda x: (str(x) + ' ') * feature_weights['overview']) +
+    movies_df['genres'].fillna('').apply(lambda x: (str(x) + ' ') * feature_weights['genres']) +
+    movies_df['keywords'].fillna('').apply(lambda x: (str(x) + ' ') * int(feature_weights['keywords'])) +
+    movies_df['crew'].fillna('').apply(lambda x: (str(x) + ' ') * int(feature_weights['crew'])) +
+    movies_df['tagline'].fillna('').apply(lambda x: (str(x) + ' ') * int(feature_weights['tagline']))
+)
+
+print("Building Vectorizer...")
+vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
 features_vector = vectorizer.fit_transform(features_data)
-
-sim = cosine_similarity(features_vector)
-
+print("Building Sparse Matrix...")
 
 
-def get_similarity(movie_name, n_reco=5):
-    ''' returns the list of movies with the highest similarity score with the given movie
-    
-    Args: 
-        movie_name: str
-    
-    Returns:
-        sorted_sim_movies: shape(n_reco, ) 
-    '''
-    list_titles = movie_df['title'].tolist()
-    find_match = difflib.get_close_matches(movie_name, list_titles)
-    try:
-        closest_match = find_match[0]
-    except IndexError:
-        return "Movie not found"
-    index_movie = movie_df[movie_df.title == closest_match]['index'].values[0]
-    sim_score = list(enumerate(sim[index_movie]))
-    sorted_sim_movies = sorted(sim_score, key=lambda x: x[1], reverse=True)[1:]
-    return sorted_sim_movies[:n_reco]
+# Metric: cosine similarity
+print("Computing Cosine Similarity...")
+features_vector_dense = features_vector.toarray().astype(np.float32)
 
-def popularity(reco_without_pop):
-    ''' sorts selected list of movies by popularity
-    
-    Args: 
-        reco_without_pop: shape(n_reco, )
-    
-    Returns:
-        sorted_pop: shape(n_reco, ) 
-    '''
-    reco_with_pop = []
-    for j, movie in enumerate(reco_without_pop):
-        index = movie[0]
-        reco_with_pop.append(reco_without_pop[j] + (movie_df.loc[index, 'popularity'],))
-    sorted_pop = sorted(reco_with_pop, key=lambda x: x[2], reverse=True)
-    return sorted_pop
+# Initialize FAISS index for inner product (cosine similarity)
+index = faiss.IndexFlatIP(features_vector_dense.shape[1]) 
+index.add(features_vector_dense)
 
-def recommend_movie(movie_name, n_display=3):
-    ''' returns list of recommended movies
-    
-    Args: 
-        movie_name: str
-    
-    Returns:
-        displayed_movies: shape(n_display, ) 
-    '''
-    sorted_movies = get_similarity(movie_name)
-    if isinstance(sorted_movies, str):
-        return [sorted_movies] 
-    else:
-        top_movies = popularity(sorted_movies)
-        displayed_movies = [movie_df.iloc[movie[0]]['title'] for movie in top_movies[:n_display]]
-        return displayed_movies
+# Collaborative Filtering
+
+user_movie_matrix = ratings_df.pivot(index='userId', columns='movieId', values='rating').fillna(0)
+movie_ratings = user_movie_matrix.T
+
+# KNN model
+collab_model = NearestNeighbors(metric='cosine', algorithm='brute')
+collab_model.fit(movie_ratings)
+
+print("Exporting models...")
+# with open('models/vectorizer.pkl', 'wb') as f:
+#     pickle.dump(vectorizer, f)
+
+# with open('models/svd.pkl', 'wb') as f:
+#     pickle.dump(svd, f)
+
+faiss.write_index(index, 'models/faiss_index.index')
+
+with open('models/tfidf_matrix.pkl', 'wb') as f:
+    pickle.dump(features_vector_dense, f)
+
+with open('models/user_movie_matrix.pkl', 'wb') as f:
+    pickle.dump(user_movie_matrix, f)
+
+with open('models/collab_model.pkl', 'wb') as f:
+    pickle.dump(collab_model, f)
+
+
+movies_df.to_csv('processed_movies.csv', index=False)

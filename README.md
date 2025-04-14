@@ -1,22 +1,16 @@
 # Movie Recommendation System
 
-A web-based movie recommendation system that suggests similar movies based on user input, combining matrix factorization with a sleek, responsive user interface.
+A collaborative filtering movie recommendation system that suggests similar movies based on user input, combining matrix factorization with a sleek user interface.
 
 ## Demo
 
-![Movie Recommender Screenshot](screenshots/landing.png)
+![Movie Recommender Screenshot](screenshots/Frontend.png)
 
 ## Features
 
-- Content-based movie recommendations using multiple features:
-  - Genres
-  - Keywords
-  - Taglines
-  - Cast
-  - Director
+- Item-based collaborative movie recommendations built on over 26 milions ratings 
 - Responsive web interface with modern design
-- Real-time recommendations using TF-IDF matrix factorization
-- Popularity-based ranking of suggestions
+- Real-time recommendations using memory-efficient dimentionality reduction
 - Use of TMDB posters for appealing interface
 - Fuzzy string matching for user-friendly input
 
@@ -41,27 +35,30 @@ A web-based movie recommendation system that suggests similar movies based on us
 movie-recommender/
 │
 ├── app.py                 # Flask application
-├── movie_recommender.py   # Recommendation engine
-├── movie_reco.ipynb       # Detailed explaination of the recommendation engine
+├── preprocess.ipynb       # Creation of the tools for recommendation
 ├── static/
 │   ├── styles.css         # CSS styling
-│   └── Bebasneue.ttf      # Custom font
+│   └── ...                # Other Images used in the webpage
 ├── templates/
 │   └── index.html         # Main webpage
-└── movies.csv             # Dataset
+├── dataset/               # Kaggle "The movie dataset"
+└── requirements.txt       # Required libraries
 ```
 
 ## How It Works
 
+Dowload the dataset [here](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset)
+
+
 1. **Data Processing**: 
-   - Loads and preprocesses movie data
-   - Combines selected features into a single text representation
-   - Converts text data into TF-IDF vectors
+   - Loads and preprocesses movie data and ratings¨
+   - Creates compressed sparse user-movie matrix 
+   - Reduce matrix dimention by SVD truncation
 
 2. **Recommendation Algorithm**:
-   - Calculates cosine similarity between all movies
    - Finds close matches to user input
-   - Ranks similar movies by popularity
+   - Calculates cosine similarity between user movie and all other movies
+   - Ranks movies by similarity and select top n
 
 3. **Web Interface**:
    - User enters a movie title
@@ -82,15 +79,17 @@ cd movie-recommender
 # Install required packages
 pip install -r requirements.txt
 
+# Go to Kaggle, download the dataset and rename it as dataset
+
 # Run the application
-python app.py
+python3 app.py
 ```
 
 ## Usage
 
 1. Open your web browser and go to `http://localhost:5000`
 2. Enter a movie title in the search box
-3. Click "Get Recommendations" or press Enter
+3. Click "Recommend movies" or press Enter
 4. View your personalized movie recommendations
 
 ## API Endpoints
@@ -117,31 +116,31 @@ Receives a movie title and returns recommendations.
 
 ## The Dataset
 
-The system requires a `movies.csv` file with the following columns:
-- title
-- genres
-- keywords
-- tagline
-- cast
-- director
-- popularity
-- index
+The dataset is the "Movie Dataset" from Kaggle and it can be downloaded [here](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset)
+
+The system requires a `dataset` folder with the Kaggle movie dataset that contains the following files:
+- `credits.csv`
+- `keywords.csv`
+- `links.csv`
+- `links_small.csv`
+- `movie_metadata.csv`
+- `ratings.csv`
+- `ratings_small.csv`
 
 ## Styling
 
 The application features a carefully crafted UI with:
-- Gradient background with SVG illustration
-- Custom typography using Uni Sans Heavy font
-- Responsive design for various screen sizes
-- Animated buttons and card shadowss
+- Clean and vibrant palette of colors
+- Custom typography using Barlow Condensed font
+- Custom background and logo
+- Animated buttons, text and card shadows
 
 ## Future Improvements
 
 - User accounts and personalized history
-- Collaborative filtering implementation
+- Hybrid filtering implementation
 - Movie posters and additional metadata
 - Mobile app development
-- Performance optimization for larger datasets
 
 ## License
 
